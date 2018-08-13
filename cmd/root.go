@@ -32,8 +32,8 @@ func flagsLogCollector() {
 	logCollectorCmd.Flags().IntVar(&LCFlags.freeSpace, "free-space", 10, "default=10  Free space threshold which will abort log collection if reached")
 	logCollectorCmd.Flags().StringArrayVar(&LCFlags.contentIds, "c", nil, "Space seperated list of content ids")
 	logCollectorCmd.Flags().BoolVar(&LCFlags.noPrompt, "no-prompts", false, "Accept all prompts")
-	logCollectorCmd.Flags().StringVarP(&LCFlags.hostfile, "f", "hostfile", "", "Read hostnames from a hostfile")
-	logCollectorCmd.Flags().StringArrayVarP(&LCFlags.hostnames, "h", "hostnames", nil, "Space seperated list of hostnames")
+	logCollectorCmd.Flags().StringVarP(&LCFlags.hostfile, "hostfile", "f", "", "Read hostnames from a hostfile")
+	logCollectorCmd.Flags().StringArrayVarP(&LCFlags.hostnames, "hostnames", "n", nil, "Space seperated list of hostnames")
 	// FIXME: If date is empty string startDate and endDate it should default to current date
 	logCollectorCmd.Flags().StringVar(&LCFlags.startDate, "start", "", "Start date for logs to collect (defaults to current date)")
 	logCollectorCmd.Flags().StringVar(&LCFlags.endDate, "end", "", "End date for logs to collect (defaults to current date)")
@@ -71,10 +71,7 @@ var versionCmd = &cobra.Command{
 var rootCmd = &cobra.Command{
 	Use:   "gpmt",
 	Short: "GPMT - diagnostic and data collection for Greemplum Database",
-	Long: `Greenplum Magic Tool is a collection of diagnostic and data collection tools
-				to assist in troubleshooting issues with Greenplum Database.
-				Documentation and development information is available at
-				https://github.com/pivotal-gss/gpmt2`,
+	Long:  "Greenplum Magic Tool is a collection of diagnostic and data collection tools to assist in troubleshooting issues with Greenplum Database. Documentation and development information is available at https://github.com/pivotal-gss/gpmt2",
 	Run: func(cmd *cobra.Command, args []string) {
 		// probably just help
 	},
@@ -83,9 +80,7 @@ var rootCmd = &cobra.Command{
 var logCollectorCmd = &cobra.Command{
 	Use:   "gp_log_collector",
 	Short: "easy log collection",
-	Long: `gp_log_collector is used to automate Greenplum database log collection.
-				Run without options, gp_log_collector will gather today's master
-				and standby logs`,
+	Long:  "gp_log_collector is used to automate Greenplum database log collection. Run without options, gp_log_collector will gather today's master and standby logs",
 	Run: func(cmd *cobra.Command, args []string) {
 		// log collect
 		fmt.Println("I'll be a log collector one day")
