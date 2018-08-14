@@ -15,19 +15,27 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// global variables
-var (
+
+// constants
+const (
 	toolName = "gpmt"
 	version = "Version ALPHA 1"
-	LCFlags LogCollectorFlags
 	githubRepo = "https://github.com/pivotal-gss/gpmt2"
+)
+
+// global variables
+var (
+	LCFlags LogCollectorFlags
+	verbose bool
+	logfile bool
+	logDestination string
 )
 
 // The root CLI.
 var rootCmd = &cobra.Command{
 	Use:   toolName,
 	Short: "Diagnostic and data collection for Greenplum Database",
-	Long:  "Greenplum Magic Tool is a collection of diagnostic and data collection tools to " +
+	Long:  "\nGreenplum Magic Tool is a collection of diagnostic and data collection tools to " +
 		   "assist in troubleshooting issues with Greenplum Database. \n" +
 		   "Documentation and development information is available at: " + githubRepo,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
@@ -57,7 +65,7 @@ var versionCmd = &cobra.Command{
 var logCollectorCmd = &cobra.Command{
 	Use:   "gp_log_collector",
 	Short: "easy log collection",
-	Long:  "gp_log_collector is used to automate Greenplum database log collection. " +
+	Long:  "\ngp_log_collector is used to automate Greenplum database log collection. \n" +
 		   "Run without options, gp_log_collector will gather today's master and standby logs",
 	Run: func(cmd *cobra.Command, args []string) {
 		// log collect
@@ -100,9 +108,17 @@ func flagsLogCollector() {
 
 // Initialize the cobra command CLI.
 func init() {
+
+	// All global flag
+	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false,"Enable verbose or debug logging")
+	rootCmd.PersistentFlags().BoolVarP(&logfile, "log-file", "l", false, "Enable recording all the log messages to the logfile")
+	rootCmd.PersistentFlags().StringVarP(&logDestination, "log-destination", "d", "/tmp", "Directory where the logfile should be created")
+
+	// Attach the sub command to the root command.
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(logCollectorCmd)
 	flagsLogCollector()
+
 }
 
 // Execute the cobra CLI
