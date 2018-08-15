@@ -120,11 +120,11 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&logDestination, "log-destination", "d", "/tmp", "Directory where the logfile should be created, only works with --log-file flag")
 
 	// Database connection parameters.
-	rootCmd.PersistentFlags().StringVarP(&hostname, "hostname", "", "localhost","Hostname where the database is hosted")
-	rootCmd.PersistentFlags().IntVarP(&port, "port", "", 5432, "Port number of the master database")
-	rootCmd.PersistentFlags().StringVarP(&database, "database", "", "template1", "Database name to connect")
-	rootCmd.PersistentFlags().StringVarP(&username, "username", "", "gpadmin", "Username that is used to connect to database")
-	rootCmd.PersistentFlags().StringVarP(&password, "password", "", "", "password for the user")
+	rootCmd.PersistentFlags().StringVar(&hostname, "hostname", "localhost","Hostname where the database is hosted")
+	rootCmd.PersistentFlags().IntVar(&port, "port", 5432, "Port number of the master database")
+	rootCmd.PersistentFlags().StringVar(&database, "database", "template1", "Database name to connect")
+	rootCmd.PersistentFlags().StringVar(&username, "username", "gpadmin", "Username that is used to connect to database")
+	rootCmd.PersistentFlags().StringVar(&password, "password", "", "password for the user")
 
 	// Attach the sub command to the root command.
 	rootCmd.AddCommand(versionCmd)
