@@ -11,8 +11,8 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 
@@ -29,6 +29,11 @@ var (
 	verbose bool
 	logfile bool
 	logDestination string
+	hostname string
+	port int
+	username string
+	password string
+	database string
 )
 
 // The root CLI.
@@ -112,7 +117,14 @@ func init() {
 	// All global flag
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false,"Enable verbose or debug logging")
 	rootCmd.PersistentFlags().BoolVarP(&logfile, "log-file", "l", false, "Enable recording all the log messages to the logfile")
-	rootCmd.PersistentFlags().StringVarP(&logDestination, "log-destination", "d", "/tmp", "Directory where the logfile should be created")
+	rootCmd.PersistentFlags().StringVarP(&logDestination, "log-destination", "d", "/tmp", "Directory where the logfile should be created, only works with --log-file flag")
+
+	// Database connection parameters.
+	rootCmd.PersistentFlags().StringVarP(&hostname, "hostname", "", "localhost","Hostname where the database is hosted")
+	rootCmd.PersistentFlags().IntVarP(&port, "port", "", 5432, "Port number of the master database")
+	rootCmd.PersistentFlags().StringVarP(&database, "database", "", "template1", "Database name to connect")
+	rootCmd.PersistentFlags().StringVarP(&username, "username", "", "gpadmin", "Username that is used to connect to database")
+	rootCmd.PersistentFlags().StringVarP(&password, "password", "", "", "password for the user")
 
 	// Attach the sub command to the root command.
 	rootCmd.AddCommand(versionCmd)
