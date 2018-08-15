@@ -7,7 +7,7 @@ Copyright 2018
 Licensed under the Apache License, Version 2.0 (the "License")
 
 */
-package cmd
+package utils
 
 import (
 	"github.com/op/go-logging"
@@ -18,14 +18,21 @@ import (
 
 // Logger name and logging format
 var (
-	log = logging.MustGetLogger(toolName)
+	log = logging.MustGetLogger(ToolName)
 	format = logging.MustStringFormatter(
 		`%{color}%{time:15:04:05.000} %{shortfile}(%{shortfunc}) ▶ %{level:.4s} ▶ %{color:reset} %{message}`,
 	)
 )
 
+// Logfile Details
+type LogConnector struct {
+	Verbose bool
+	LogFile bool
+	LogDestination string
+}
+
 // Setup the logger.
-func SetupLogger()  {
+func (l *LogConnector) SetupLogger()  {
 
 	// New On Screen logger
 	backendScreen := logging.NewLogBackend(os.Stderr, "", 0)
@@ -33,14 +40,14 @@ func SetupLogger()  {
 	screenLeveled := logging.AddModuleLevel(screenFormatted)
 
 	// Setup logfile logger
-	logFilename := fmt.Sprintf(logDestination + "/gpmt_log_%s.log", time.Now().Format("2006-01-02"))
+	logFilename := fmt.Sprintf(l.LogDestination + "/gpmt_log_%s.log", time.Now().Format("2006-01-02"))
 	file, err := os.OpenFile(logFilename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666)
 	backendFile := logging.NewLogBackend(file, "", 0)
 	fileFormatter := logging.NewBackendFormatter(backendFile, format)
 	fileLeveled := logging.AddModuleLevel(fileFormatter)
 
 	// Setup the logging level based on users request
-	if verbose {
+	if l.Verbose {
 		screenLeveled.SetLevel(logging.DEBUG, "")
 		fileLeveled.SetLevel(logging.DEBUG, "")
 	} else {
@@ -50,7 +57,7 @@ func SetupLogger()  {
 
 	// If the user wants all the logs on the logfile save them on the location ( if provided )
 	// or use the default destination that is /tmp
-	if logfile {
+	if l.LogFile {
 		logging.SetBackend(screenLeveled, fileLeveled)
 	} else { // Start the screen only logger
 		logging.SetBackend(screenLeveled)
@@ -62,7 +69,7 @@ func SetupLogger()  {
 	if err != nil {
 		log.Warningf("Cannot log messages onto logfile: \"%s\", ERROR: %v", logFilename, err)
 		log.Infof("Continuing the script with on screen logging...")
-	} else if logfile {
-		log.Debugf("All %s tool log messages are logged into: \"%s\"", toolName, logFilename)
+	} else if l.LogFile {
+		log.Debugf("All %s tool log messages are logged into: \"%s\"", ToolName, logFilename)
 	}
 }

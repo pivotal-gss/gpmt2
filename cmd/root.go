@@ -13,39 +13,28 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"github.com/pivotal-gss/gpmt2/utils"
+	"github.com/op/go-logging"
 )
 
-
-// constants
-const (
-	toolName = "gpmt"
-	version = "Version ALPHA 1"
-	githubRepo = "https://github.com/pivotal-gss/gpmt2"
-)
-
-// global variables
+// Local Package Variables
 var (
 	LCFlags LogCollectorFlags
-	verbose bool
-	logfile bool
-	logDestination string
-	hostname string
-	port int
-	username string
-	password string
-	database string
+	db utils.DbConnector
+	logFlags utils.LogConnector
+	log = logging.MustGetLogger(utils.ToolName)
 )
 
 // The root CLI.
 var rootCmd = &cobra.Command{
-	Use:   toolName,
+	Use:   utils.ToolName,
 	Short: "Diagnostic and data collection for Greenplum Database",
 	Long:  "\nGreenplum Magic Tool is a collection of diagnostic and data collection tools to " +
 		   "assist in troubleshooting issues with Greenplum Database. \n" +
-		   "Documentation and development information is available at: " + githubRepo,
+		   "Documentation and development information is available at: " + utils.GithubRepo,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		// Before running any command setup the logger
-		SetupLogger()
+		logFlags.SetupLogger()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		// if no argument specified throw the help menu on the screen
@@ -61,7 +50,7 @@ var versionCmd = &cobra.Command{
 	Long:  `Greenplum Magic Tool version`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// print the version number on the screen when asked.
-		fmt.Printf("%s: %s \n", cmd.Long, version)
+		fmt.Printf("%s: %s \n", cmd.Long, utils.GpmtVersion)
 	},
 }
 
@@ -115,16 +104,16 @@ func flagsLogCollector() {
 func init() {
 
 	// All global flag
-	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false,"Enable verbose or debug logging")
-	rootCmd.PersistentFlags().BoolVarP(&logfile, "log-file", "l", false, "Enable recording all the log messages to the logfile")
-	rootCmd.PersistentFlags().StringVarP(&logDestination, "log-destination", "d", "/tmp", "Directory where the logfile should be created, only works with --log-file flag")
+	rootCmd.PersistentFlags().BoolVarP(&logFlags.Verbose, "verbose", "v", false,"Enable verbose or debug logging")
+	rootCmd.PersistentFlags().BoolVarP(&logFlags.LogFile, "log-file", "l", false, "Enable recording all the log messages to the logfile")
+	rootCmd.PersistentFlags().StringVarP(&logFlags.LogDestination, "log-destination", "d", "/tmp", "Directory where the logfile should be created, only works with --log-file flag")
 
 	// Database connection parameters.
-	rootCmd.PersistentFlags().StringVar(&hostname, "hostname", "localhost","Hostname where the database is hosted")
-	rootCmd.PersistentFlags().IntVar(&port, "port", 5432, "Port number of the master database")
-	rootCmd.PersistentFlags().StringVar(&database, "database", "template1", "Database name to connect")
-	rootCmd.PersistentFlags().StringVar(&username, "username", "gpadmin", "Username that is used to connect to database")
-	rootCmd.PersistentFlags().StringVar(&password, "password", "", "password for the user")
+	rootCmd.PersistentFlags().StringVar(&db.Hostname, "hostname", "localhost","Hostname where the database is hosted")
+	rootCmd.PersistentFlags().IntVar(&db.Port, "port", 5432, "Port number of the master database")
+	rootCmd.PersistentFlags().StringVar(&db.Database, "database", "template1", "Database name to connect")
+	rootCmd.PersistentFlags().StringVar(&db.Username, "username", "gpadmin", "Username that is used to connect to database")
+	rootCmd.PersistentFlags().StringVar(&db.Password, "password", "", "Password for the user")
 
 	// Attach the sub command to the root command.
 	rootCmd.AddCommand(versionCmd)
