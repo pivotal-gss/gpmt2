@@ -30,7 +30,7 @@ func SetupLogger()  {
 	// New On Screen logger
 	backendScreen := logging.NewLogBackend(os.Stderr, "", 0)
 	screenFormatted := logging.NewBackendFormatter(backendScreen, format)
-	screenLevelled := logging.AddModuleLevel(screenFormatted)
+	screenLeveled := logging.AddModuleLevel(screenFormatted)
 
 	// Setup logfile logger
 	logFilename := fmt.Sprintf(logDestination + "/gpmt_log_%s.log", time.Now().Format("2006-01-02"))
@@ -41,19 +41,19 @@ func SetupLogger()  {
 
 	// Setup the logging level based on users request
 	if verbose {
-		screenLevelled.SetLevel(logging.DEBUG, "")
+		screenLeveled.SetLevel(logging.DEBUG, "")
 		fileLeveled.SetLevel(logging.DEBUG, "")
 	} else {
-		screenLevelled.SetLevel(logging.INFO, "")
+		screenLeveled.SetLevel(logging.INFO, "")
 		fileLeveled.SetLevel(logging.INFO, "")
 	}
 
 	// If the user wants all the logs on the logfile save them on the location ( if provided )
 	// or use the default destination that is /tmp
 	if logfile {
-		logging.SetBackend(screenLevelled, fileLeveled)
+		logging.SetBackend(screenLeveled, fileLeveled)
 	} else { // Start the screen only logger
-		logging.SetBackend(screenLevelled)
+		logging.SetBackend(screenLeveled)
 	}
 
 	// If the file creation failed, then place a warning message on the screen.
