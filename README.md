@@ -24,4 +24,8 @@ CI will be provided by Travis - if sufficient code is written, it is expected th
 
 Please ensure all submitted code is formatted with gofmt. 
 
-Of course, issue requests are the best way to start a request for new features or bugs.
+This repository uses [dep](https://github.com/golang/dep) so please ensure you run `dep ensure --update` if you add imports. 
+
+
+
+Of course, github issue requests are the best way to start a request for new features or bugs.
