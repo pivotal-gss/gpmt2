@@ -10,31 +10,51 @@ Licensed under the Apache License, Version 2.0 (the "License")
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
-	"os"
 	"github.com/pivotal-gss/gpmt2/utils"
-	"github.com/op/go-logging"
+	"github.com/pivotal-gss/gpmt2/log"
+	"github.com/Sirupsen/logrus"
+	"fmt"
+	"os"
 )
 
 // Local Package Variables
 var (
 	LCFlags LogCollectorFlags
 	db utils.DbConnector
-	logFlags utils.LogConnector
-	log = logging.MustGetLogger(utils.ToolName)
+	logFlags logConnector
+	ToolName = "gpmt"
+	GpmtVersion = "Version ALPHA 1"
+	GithubRepo = "https://github.com/pivotal-gss/gpmt2"
 )
+
+type logConnector struct {
+	Verbose bool
+	LogFile bool
+	LogDestination string
+}
 
 // The root CLI.
 var rootCmd = &cobra.Command{
-	Use:   utils.ToolName,
+	Use:   ToolName,
 	Short: "Diagnostic and data collection for Greenplum Database",
 	Long:  "\nGreenplum Magic Tool is a collection of diagnostic and data collection tools to " +
 		   "assist in troubleshooting issues with Greenplum Database. \n" +
-		   "Documentation and development information is available at: " + utils.GithubRepo,
+		   "Documentation and development information is available at: " + GithubRepo,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		// Before running any command setup the logger
-		logFlags.SetupLogger()
+		// Before running any command
+		// Setup the logger log level
+		if logFlags.Verbose {
+			log.SetLogLevel(logrus.DebugLevel)
+		} else {
+			log.SetLogLevel(logrus.InfoLevel)
+		}
+
+		// Setup the logfile to where this should be written
+		if logFlags.LogFile {
+			log.SetlogFile(logFlags.LogDestination)
+		}
+
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		// if no argument specified throw the help menu on the screen
@@ -50,7 +70,7 @@ var versionCmd = &cobra.Command{
 	Long:  `Greenplum Magic Tool version`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// print the version number on the screen when asked.
-		fmt.Printf("%s: %s \n", cmd.Long, utils.GpmtVersion)
+		fmt.Printf("%s: %s \n", cmd.Long, GpmtVersion)
 	},
 }
 
