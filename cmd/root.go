@@ -15,7 +15,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/pivotal-gss/gpmt2/utils"
 	"github.com/Sirupsen/logrus"
-	"github.com/pivotal-gss/gpmt2/logger"
+	"github.com/pivotal-gss/gpmt2/log"
 )
 
 // Local Package Variables
@@ -45,14 +45,14 @@ var rootCmd = &cobra.Command{
 		// Before running any command
 		// Setup the logger log level
 		if logFlags.Verbose {
-			logger.SetLogLevel(logrus.DebugLevel)
+			log.SetLogLevel(logrus.DebugLevel)
 		} else {
-			logger.SetLogLevel(logrus.InfoLevel)
+			log.SetLogLevel(logrus.InfoLevel)
 		}
 
 		// Setup the logfile to where this should be written
 		if logFlags.LogFile {
-			logger.SetlogFile(logFlags.LogDestination)
+			log.SetlogFile(logFlags.LogDestination)
 		}
 
 	},

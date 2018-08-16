@@ -14,7 +14,7 @@ import (
 	_ "github.com/lib/pq"
 	"fmt"
 	"time"
-	"github.com/pivotal-gss/gpmt2/logger"
+	"github.com/pivotal-gss/gpmt2/log"
 )
 
 var _db *sql.DB
@@ -83,11 +83,11 @@ func (scanner *MetalScanner) Scan(src interface{}) error {
 func (db *DbConnector) establishConnection() {
 	connStr := fmt.Sprintf("user=%v password=%v host=%v port=%v dbname=%v sslmode=disable",
 		db.Username, db.Password, db.Hostname, db.Port, db.Database)
-	logger.Debug("Connecting to the database using the connection string: " + connStr)
+	log.Debug("Connecting to the database using the connection string: " + connStr)
 	conn , err := sql.Open("postgres", connStr)
 	_db = conn
 	if err != nil {
-		logger.Fatal("Failed to establish a connection to database: " + fmt.Sprint(err))
+		log.Fatal("Failed to establish a connection to database: " + fmt.Sprint(err))
 	}
 }
 
@@ -95,7 +95,7 @@ func (db *DbConnector) establishConnection() {
 func (db *DbConnector) closeConnection() {
 	err := _db.Close()
 	if err != nil {
-		logger.Warn("Failed to close database connection: " + fmt.Sprint(err))
+		log.Warn("Failed to close database connection: " + fmt.Sprint(err))
 	}
 }
 
@@ -114,7 +114,7 @@ func (db *DbConnector) ExecuteQuery(query string) ([]map[string]interface{}, err
 	var data []map[string]interface{}
 
 	// Execute the query to the database.
-	logger.Debug("Executing the statement: " + query)
+	log.Debug("Executing the statement: " + query)
 	rows, err := _db.Query(query)
 	if err != nil {
 		return data, err
