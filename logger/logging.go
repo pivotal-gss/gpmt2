@@ -7,7 +7,7 @@ Copyright 2018
 Licensed under the Apache License, Version 2.0 (the "License")
 
 */
-package log
+package logger
 
 import (
 	"github.com/Sirupsen/logrus"
@@ -19,19 +19,19 @@ import (
 	"io"
 )
 
-var logger = logrus.New()
+var log = logrus.New()
 
 // Fields wraps logrus.Fields, which is a map[string]interface{}
 type Fields logrus.Fields
 
 // Setup the log level for logrus
 func SetLogLevel(level logrus.Level) {
-	logger.Level = level
+	log.Level = level
 }
 
 // Set the logrus format
 func SetLogFormatter(formatter logrus.Formatter) {
-	logger.Formatter = formatter
+	log.Formatter = formatter
 }
 
 // Enable logging to logfile.
@@ -39,20 +39,20 @@ func SetlogFile(dest string) {
 	logFilename := fmt.Sprintf(dest + "/gpmaaat_log_%s", time.Now().Format("2006-01-02"))
 	logFile, err := os.OpenFile(logFilename, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
-		Error("could not open file: " + fmt.Sprint(err))
-		Error("continuing with stdout only")
+		Error("Could not open file: " + fmt.Sprint(err))
+		Error("Continuing with stdout only")
 	} else {
 		Info("Writing the log message to the logfile: " + logFilename)
 	}
 	mw := io.MultiWriter(os.Stdout, logFile)
-	logger.SetOutput(mw)
+	log.SetOutput(mw)
 }
 
 
 // Debug logs a message at level Debug on the standard logger.
 func Debug(args ...interface{}) {
-	if logger.Level >= logrus.DebugLevel {
-		entry := logger.WithFields(logrus.Fields{})
+	if log.Level >= logrus.DebugLevel {
+		entry := log.WithFields(logrus.Fields{})
 		entry.Data["file"] = fileInfo(2)
 		entry.Debug(args)
 	}
@@ -60,8 +60,8 @@ func Debug(args ...interface{}) {
 
 // Debug logs a message with fields at level Debug on the standard logger.
 func DebugWithFields(l interface{}, f Fields) {
-	if logger.Level >= logrus.DebugLevel {
-		entry := logger.WithFields(logrus.Fields(f))
+	if log.Level >= logrus.DebugLevel {
+		entry := log.WithFields(logrus.Fields(f))
 		entry.Data["file"] = fileInfo(2)
 		entry.Debug(l)
 	}
@@ -69,8 +69,8 @@ func DebugWithFields(l interface{}, f Fields) {
 
 // Info logs a message at level Info on the standard logger.
 func Info(args ...interface{}) {
-	if logger.Level >= logrus.InfoLevel {
-		entry := logger.WithFields(logrus.Fields{})
+	if log.Level >= logrus.InfoLevel {
+		entry := log.WithFields(logrus.Fields{})
 		entry.Data["file"] = fileInfo(2)
 		entry.Info(args...)
 	}
@@ -78,8 +78,8 @@ func Info(args ...interface{}) {
 
 // Debug logs a message with fields at level Debug on the standard logger.
 func InfoWithFields(l interface{}, f Fields) {
-	if logger.Level >= logrus.InfoLevel {
-		entry := logger.WithFields(logrus.Fields(f))
+	if log.Level >= logrus.InfoLevel {
+		entry := log.WithFields(logrus.Fields(f))
 		entry.Data["file"] = fileInfo(2)
 		entry.Info(l)
 	}
@@ -87,8 +87,8 @@ func InfoWithFields(l interface{}, f Fields) {
 
 // Warn logs a message at level Warn on the standard logger.
 func Warn(args ...interface{}) {
-	if logger.Level >= logrus.WarnLevel {
-		entry := logger.WithFields(logrus.Fields{})
+	if log.Level >= logrus.WarnLevel {
+		entry := log.WithFields(logrus.Fields{})
 		entry.Data["file"] = fileInfo(2)
 		entry.Warn(args...)
 	}
@@ -96,8 +96,8 @@ func Warn(args ...interface{}) {
 
 // Debug logs a message with fields at level Debug on the standard logger.
 func WarnWithFields(l interface{}, f Fields) {
-	if logger.Level >= logrus.WarnLevel {
-		entry := logger.WithFields(logrus.Fields(f))
+	if log.Level >= logrus.WarnLevel {
+		entry := log.WithFields(logrus.Fields(f))
 		entry.Data["file"] = fileInfo(2)
 		entry.Warn(l)
 	}
@@ -105,8 +105,8 @@ func WarnWithFields(l interface{}, f Fields) {
 
 // Error logs a message at level Error on the standard logger.
 func Error(args ...interface{}) {
-	if logger.Level >= logrus.ErrorLevel {
-		entry := logger.WithFields(logrus.Fields{})
+	if log.Level >= logrus.ErrorLevel {
+		entry := log.WithFields(logrus.Fields{})
 		entry.Data["file"] = fileInfo(2)
 		entry.Error(args...)
 	}
@@ -114,8 +114,8 @@ func Error(args ...interface{}) {
 
 // Debug logs a message with fields at level Debug on the standard logger.
 func ErrorWithFields(l interface{}, f Fields) {
-	if logger.Level >= logrus.ErrorLevel {
-		entry := logger.WithFields(logrus.Fields(f))
+	if log.Level >= logrus.ErrorLevel {
+		entry := log.WithFields(logrus.Fields(f))
 		entry.Data["file"] = fileInfo(2)
 		entry.Error(l)
 	}
@@ -123,8 +123,8 @@ func ErrorWithFields(l interface{}, f Fields) {
 
 // Fatal logs a message at level Fatal on the standard logger.
 func Fatal(args ...interface{}) {
-	if logger.Level >= logrus.FatalLevel {
-		entry := logger.WithFields(logrus.Fields{})
+	if log.Level >= logrus.FatalLevel {
+		entry := log.WithFields(logrus.Fields{})
 		entry.Data["file"] = fileInfo(2)
 		entry.Fatal(args...)
 	}
@@ -132,8 +132,8 @@ func Fatal(args ...interface{}) {
 
 // Debug logs a message with fields at level Debug on the standard logger.
 func FatalWithFields(l interface{}, f Fields) {
-	if logger.Level >= logrus.FatalLevel {
-		entry := logger.WithFields(logrus.Fields(f))
+	if log.Level >= logrus.FatalLevel {
+		entry := log.WithFields(logrus.Fields(f))
 		entry.Data["file"] = fileInfo(2)
 		entry.Fatal(l)
 	}
@@ -141,8 +141,8 @@ func FatalWithFields(l interface{}, f Fields) {
 
 // Panic logs a message at level Panic on the standard logger.
 func Panic(args ...interface{}) {
-	if logger.Level >= logrus.PanicLevel {
-		entry := logger.WithFields(logrus.Fields{})
+	if log.Level >= logrus.PanicLevel {
+		entry := log.WithFields(logrus.Fields{})
 		entry.Data["file"] = fileInfo(2)
 		entry.Panic(args...)
 	}
@@ -150,8 +150,8 @@ func Panic(args ...interface{}) {
 
 // Debug logs a message with fields at level Debug on the standard logger.
 func PanicWithFields(l interface{}, f Fields) {
-	if logger.Level >= logrus.PanicLevel {
-		entry := logger.WithFields(logrus.Fields(f))
+	if log.Level >= logrus.PanicLevel {
+		entry := log.WithFields(logrus.Fields(f))
 		entry.Data["file"] = fileInfo(2)
 		entry.Panic(l)
 	}

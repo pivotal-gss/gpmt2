@@ -10,12 +10,12 @@ Licensed under the Apache License, Version 2.0 (the "License")
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/pivotal-gss/gpmt2/utils"
-	"github.com/pivotal-gss/gpmt2/log"
-	"github.com/Sirupsen/logrus"
 	"fmt"
 	"os"
+	"github.com/spf13/cobra"
+	"github.com/pivotal-gss/gpmt2/utils"
+	"github.com/Sirupsen/logrus"
+	"github.com/pivotal-gss/gpmt2/logger"
 )
 
 // Local Package Variables
@@ -45,14 +45,14 @@ var rootCmd = &cobra.Command{
 		// Before running any command
 		// Setup the logger log level
 		if logFlags.Verbose {
-			log.SetLogLevel(logrus.DebugLevel)
+			logger.SetLogLevel(logrus.DebugLevel)
 		} else {
-			log.SetLogLevel(logrus.InfoLevel)
+			logger.SetLogLevel(logrus.InfoLevel)
 		}
 
 		// Setup the logfile to where this should be written
 		if logFlags.LogFile {
-			log.SetlogFile(logFlags.LogDestination)
+			logger.SetlogFile(logFlags.LogDestination)
 		}
 
 	},
