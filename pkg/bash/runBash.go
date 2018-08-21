@@ -48,7 +48,7 @@ func RunBashCmd(timeout int, command string, args ...string) (string, error) {
 	go func(ticker *time.Ticker) {
 		now := time.Now()
 		for _ = range ticker.C {
-			log.Debugf("Waiting on process (%d): %s", pid, []byte(fmt.Sprintf("%s", time.Since(now))))
+			log.Debugf("Waiting on process(%d): %s", pid, []byte(fmt.Sprintf("%s", time.Since(now))))
 		}
 	}(ticker)
 
@@ -69,7 +69,7 @@ func RunBashCmd(timeout int, command string, args ...string) (string, error) {
 		err := <-done
 		if err != nil {
 			close(done)
-			return "", fmt.Errorf("process done, with error: %s", err.Error())
+			return "", fmt.Errorf("process(%d) done, with error: %s", pid, err.Error())
 		}
 		// Done, send the information back to user
 		return buf.String(), nil
@@ -79,14 +79,14 @@ func RunBashCmd(timeout int, command string, args ...string) (string, error) {
 		// Terminate the process since the timeout has reached.
 		case <-time.After(time.Duration(timeout) * time.Second):
 			if err := process.Kill(); err != nil {
-				return "", fmt.Errorf("failed to kill: %s", err.Error())
+				return "", fmt.Errorf("failed to kill the process(%d): %s", pid, err.Error())
 			}
-			return "", fmt.Errorf("timeout reached, process killed")
+			return "", fmt.Errorf("timeout reached, process(%d) killed", pid)
 		// The command is done, send the output back to the user
 		case err := <-done:
 			if err != nil {
 				close(done)
-				return "", fmt.Errorf("process done, with error: %s", err.Error())
+				return "",fmt.Errorf("process(%d) done, with error: %s", pid, err.Error())
 			}
 			return buf.String(), nil
 		}
