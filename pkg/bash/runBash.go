@@ -68,7 +68,8 @@ func RunBashCmd(timeout int, command string, args ...string) (string, error) {
 	if timeout == 0 {
 		err := <-done
 		if err != nil {
-			return "", err
+			close(done)
+			return "", fmt.Errorf("process done, with error: %s", err.Error())
 		}
 		// Done, send the information back to user
 		return buf.String(), nil
